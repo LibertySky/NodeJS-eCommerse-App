@@ -1,21 +1,21 @@
 {
-  "name": "nodejs-complete-guide",
-  "version": "1.0.0",
-  "description": "Complete Node.js Guide",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js",
-    "start-server": "node app.js"
-  },
-  "author": "Maximilian Schwarzmüller",
-  "license": "ISC",
-  "devDependencies": {
-    "nodemon": "^1.18.3"
-  },
-  "dependencies": {
-    "body-parser": "^1.19.0",
-    "ejs": "^3.1.5",
-    "express": "^4.16.3"
-  }
+	"name": "NodeJS-eCommerce-App",
+	"version": "1.0.0",
+	"description": "Learning how to build  Node JS app with express, SQL, MongoDB, 0Auth, Payments API",
+	"main": "app.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "nodemon app.js",
+		"start-server": "node app.js"
+	},
+	"author": "LibertySky",
+	"license": "ISC",
+	"devDependencies": {
+		"nodemon": "^1.18.3"
+	},
+	"dependencies": {
+		"body-parser": "^1.19.0",
+		"ejs": "^3.1.5",
+		"express": "^4.16.3"
+	}
 }
