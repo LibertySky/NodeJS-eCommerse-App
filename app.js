@@ -46,8 +46,8 @@ User.hasMany(Product);
 
 // DB synchronization
 sequelize
-	// .sync({ force: true }) //force to override tables in the db
 	.sync()
+	// .sync({ force: true })
 	.then((result) => {
 		return User.findByPk(1);
 		// console.log(result);

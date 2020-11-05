@@ -13,15 +13,23 @@ exports.postAddProduct = (req, res, next) => {
 	const imgUrl = req.body.imgUrl;
 	const description = req.body.description;
 	const price = req.body.price;
-	// Creating product with sequelize
-	Product.create({
-		title: title,
-		price: price,
-		imgUrl: imgUrl,
-		description: description,
-	})
-		.then(res.redirect('/admin/products'))
-		.catch((err) => console.log(err));
+
+	// Creating product with sequelize: createProduct()-method created by sequelize based on model name 'Product"
+	req.user
+		.createProduct({
+			title: title,
+			price: price,
+			imgUrl: imgUrl,
+			description: description,
+		})
+		.then((result) => {
+			// console.log(result);
+			console.log('Created Product');
+			res.redirect('/admin/products');
+		})
+		.catch((err) => {
+			console.log(err);
+		});
 
 	// Creating product with mysql2 package
 	// const product = new Product(null, title, imgUrl, description, price);
