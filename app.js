@@ -5,6 +5,9 @@ const bodyParser = require('body-parser');
 
 const errorController = require('./controllers/error');
 
+// MongoDB
+const mongoConnect = require('./util/database');
+
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -21,4 +24,9 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-app.listen(3000);
+const PORT = process.env.PORT || 3000;
+
+mongoConnect((client) => {
+	// console.log(client);
+	app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+});
