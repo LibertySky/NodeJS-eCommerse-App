@@ -66,6 +66,9 @@ sequelize
 	})
 	.then((user) => {
 		// console.log(user);
+		return user.createCart();
+	})
+	.then(() => {
 		app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 	})
 	.catch((err) => {
