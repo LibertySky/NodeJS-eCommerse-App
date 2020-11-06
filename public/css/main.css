@@ -19,6 +19,11 @@ form {
 	display: inline;
 }
 
+.centered {
+	margin: 25px auto 0 auto;
+	text-align: center;
+}
+
 .image {
 	height: 21rem;
 }
@@ -199,6 +204,10 @@ form {
 .btn:active {
 	background-color: #00695c;
 	color: white;
+}
+
+.danger {
+	color: crimson;
 }
 
 @media (min-width: 768px) {
