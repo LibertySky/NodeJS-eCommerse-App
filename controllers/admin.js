@@ -1,3 +1,4 @@
+const { update } = require('../models/product');
 const Product = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
@@ -9,19 +10,12 @@ exports.getAddProduct = (req, res, next) => {
 };
 
 exports.postAddProduct = (req, res, next) => {
-	const title = req.body.title;
-	const imgUrl = req.body.imgUrl;
-	const description = req.body.description;
-	const price = req.body.price;
-
-	const product = new Product(
-		title,
-		imgUrl,
-		description,
-		price,
-		null,
-		req.user._id
-	);
+	const product = new Product({
+		title: req.body.title,
+		imgUrl: req.body.imgUrl,
+		description: req.body.description,
+		price: req.body.price,
+	});
 	product
 		.save()
 		.then(() => {
@@ -61,15 +55,14 @@ exports.postEditProduct = (req, res, next) => {
 	const updatedImgUrl = req.body.imgUrl;
 	const updatedDesc = req.body.description;
 
-	const product = new Product(
-		updatedTitle,
-		updatedImgUrl,
-		updatedDesc,
-		updatedPrice,
-		prodId
-	);
-	product
-		.save()
+	Product.findById(prodId)
+		.then((product) => {
+			product.title = updatedTitle;
+			product.price = updatedPrice;
+			product.imgUrl = updatedImgUrl;
+			product.description = updatedDesc;
+			return product.save();
+		})
 		.then(() => {
 			// console.log('UPDATED PRODUCT!');
 			res.redirect('/admin/products');
@@ -78,7 +71,7 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-	Product.fetchAll()
+	Product.find()
 		.then((products) => {
 			res.render('admin/products', {
 				prods: products,
@@ -93,7 +86,7 @@ exports.getProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
 	const prodId = req.body.productId;
-	Product.deleteById(prodId)
+	Product.findByIdAndDelete(prodId)
 		.then(() => res.redirect('/admin/products'))
 		.catch((err) => {
 			console.log(err);
