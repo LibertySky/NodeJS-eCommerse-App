@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const errorController = require('./controllers/error');
+const User = require('./models/user');
 
 const app = express();
 
@@ -17,14 +18,14 @@ const shopRoutes = require('./routes/shop');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use((req, res, next) => {
-// 	User.findById('5fad8963d36e5faa5d71827c')
-// 		.then((user) => {
-// 			req.user = new User(user.name, user.email, user.cart, user._id);
-// 			next();
-// 		})
-// 		.catch((err) => console.log(err));
-// });
+app.use((req, res, next) => {
+	User.findById('5fc68448ad60db0cb053a931')
+		.then((user) => {
+			req.user = user;
+			next();
+		})
+		.catch((err) => console.log(err));
+});
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
@@ -39,5 +40,15 @@ mongoose
 		useUnifiedTopology: true,
 	})
 	.then(() => {
+		User.findOne().then((user) => {
+			if (!user) {
+				const user = User({
+					name: 'LibertySky',
+					email: 'hello@libertyskygraphics.com',
+					cart: { items: [] },
+				});
+				user.save();
+			}
+		});
 		app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 	});
