@@ -25,6 +25,7 @@ const authRoutes = require('./routes/auth');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+// Sessions & cookies
 app.use(
 	session({
 		secret: process.env.SESSION,
@@ -37,8 +38,12 @@ app.use(
 	})
 );
 
+// Dummy user
 app.use((req, res, next) => {
-	User.findById('5fc68448ad60db0cb053a931')
+	if (!req.session.user) {
+		return next();
+	}
+	User.findById(req.session.user._id)
 		.then((user) => {
 			req.user = user;
 			next();
@@ -46,10 +51,10 @@ app.use((req, res, next) => {
 		.catch((err) => console.log(err));
 });
 
+// Routes
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
-
 app.use(errorController.get404);
 
 const PORT = process.env.PORT || 3000;

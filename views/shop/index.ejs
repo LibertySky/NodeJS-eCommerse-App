@@ -23,7 +23,11 @@
                         </div>
                         <div class="card__actions">
                                 <a href="/products/<%= product._id %>" class="btn">Details</a>
-                            <%- include('../includes/add-to-cart.ejs', {product: product}) %>
+                                <% if(isAuthenticated) { %>
+                                    <%- include('../includes/add-to-cart.ejs', {product: product}) %>
+                                <% } else { %>
+                                    <a class="btn" href="/login">Login to buy</a>
+                                <% } %>
                         </div>
                     </article>
                 <% } %>
