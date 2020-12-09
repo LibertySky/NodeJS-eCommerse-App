@@ -65,15 +65,5 @@ mongoose
 		useUnifiedTopology: true,
 	})
 	.then(() => {
-		User.findOne().then((user) => {
-			if (!user) {
-				const user = User({
-					name: 'LibertySky',
-					email: 'hello@libertyskygraphics.com',
-					cart: { items: [] },
-				});
-				user.save();
-			}
-		});
 		app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 	});
