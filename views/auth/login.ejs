@@ -9,18 +9,23 @@
   <main>
     <h2 class="centered">Log in</h2>
     <div class="auth-block">
-      <form class="login-form" action="/login" method="POST">
-          <div class="form-control">
-              <label for="email">E-mail</label>
-              <input type="email" name="email" id="email">
-          </div>
-          <div class="form-control">
-              <label for="password">Password</label>
-              <input type="password" name="password" id="password">
-          </div>
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-          <button class="btn" type="submit">Sign in &rarr;</button>
-      </form>
+      <% if (errorMessage) { %> 
+      <div class="user-message user-message--error"><%= errorMessage %> </div>
+      <% } %> 
+      <div class="form">
+        <form class="login-form" action="/login" method="POST">
+            <div class="form-control">
+                <label for="email">E-mail</label>
+                <input type="email" name="email" id="email">
+            </div>
+            <div class="form-control">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password">
+            </div>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <button class="btn" type="submit">Sign in &rarr;</button>
+        </form>
+      </div>
     </div>
   </main>
 <%- include('../includes/end.ejs') %>

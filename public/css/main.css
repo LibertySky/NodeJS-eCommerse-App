@@ -226,6 +226,19 @@ form {
 	color: white;
 }
 
+.user-message {
+	margin: auto;
+	width: 80%;
+	color: #fff;
+	text-align: center;
+	padding: 3px;
+}
+
+.user-message--error {
+	/* color: red; */
+	background-color: red;
+}
+
 @media (min-width: 768px) {
 	.main-header__nav {
 		display: flex;
