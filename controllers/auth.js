@@ -1,5 +1,10 @@
+require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
+
+// send emails
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 exports.getLogin = (req, res, next) => {
 	let message = req.flash('error');
@@ -60,10 +65,10 @@ exports.postLogin = (req, res, next) => {
 };
 
 exports.postSignup = (req, res, next) => {
-	const email = req.body.email;
+	const userEmail = req.body.email;
 	const password = req.body.password;
 	const confirmPassword = req.body.confirmPassword;
-	User.findOne({ email: email })
+	User.findOne({ email: userEmail })
 		.then((userDoc) => {
 			if (userDoc) {
 				req.flash('error', 'Email already in use');
@@ -73,7 +78,7 @@ exports.postSignup = (req, res, next) => {
 				.hash(password, 12)
 				.then((hashedPassword) => {
 					const user = new User({
-						email: email,
+						email: userEmail,
 						password: hashedPassword,
 						cart: { items: [] },
 					});
@@ -81,6 +86,26 @@ exports.postSignup = (req, res, next) => {
 				})
 				.then(() => {
 					res.redirect('/login');
+					const msg = {
+						to: userEmail,
+						from: 'hello@libertyskygraphics.com',
+						cc: 'hello@libertyskygraphics.com',
+						subject: 'Your account successfully created',
+						text:
+							'Your account at eCommerce Training App with Node.JS successfully created.',
+						html:
+							'<p><strong>Your account at eCommerce Training App with Node.JS successfully created.</strong></p><p>Thank you for registration!</p>',
+					};
+					return sgMail.send(msg).then(
+						() => {},
+						(error) => {
+							console.error(error);
+
+							if (error.response) {
+								console.error(error.response.body);
+							}
+						}
+					);
 				});
 		})
 		.catch((err) => console.log(err));
