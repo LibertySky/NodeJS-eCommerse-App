@@ -248,3 +248,7 @@ form {
 		display: none;
 	}
 }
+
+.mb {
+	margin-bottom: 15px;
+}

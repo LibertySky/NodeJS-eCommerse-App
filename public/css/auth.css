@@ -17,4 +17,10 @@
 	max-width: 90%;
 	margin: auto;
 	display: block;
+	margin-bottom: 15px;
+}
+
+.bottom-link {
+	color: seashell;
+	text-decoration: none;
 }
