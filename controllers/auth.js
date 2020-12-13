@@ -1,6 +1,8 @@
 require('dotenv').config();
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
+const { validationResult } = require('express-validator');
+
 const User = require('../models/user');
 
 // send emails
@@ -39,6 +41,14 @@ exports.getSignup = (req, res, next) => {
 exports.postLogin = (req, res, next) => {
 	const email = req.body.email;
 	const password = req.body.password;
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.render('auth/login', {
+			pageTitle: 'Login',
+			path: '/login',
+			errorMessage: errors.array()[0].msg,
+		});
+	}
 	User.findOne({ email: email })
 		.then((user) => {
 			if (!user) {
@@ -69,46 +79,47 @@ exports.postLogin = (req, res, next) => {
 exports.postSignup = (req, res, next) => {
 	const userEmail = req.body.email;
 	const password = req.body.password;
-	const confirmPassword = req.body.confirmPassword;
-	User.findOne({ email: userEmail })
-		.then((userDoc) => {
-			if (userDoc) {
-				req.flash('error', 'Email already in use');
-				return res.redirect('/signup');
-			}
-			return bcrypt
-				.hash(password, 12)
-				.then((hashedPassword) => {
-					const user = new User({
-						email: userEmail,
-						password: hashedPassword,
-						cart: { items: [] },
-					});
-					return user.save();
-				})
-				.then(() => {
-					res.redirect('/login');
-					const msg = {
-						to: userEmail,
-						from: 'hello@libertyskygraphics.com',
-						cc: 'libertyskygraphics@gmail.com',
-						subject: 'Your account successfully created',
-						html:
-							'<p><strong>Your account at eCommerce Training App with Node.JS successfully created.</strong></p><p>Thank you for registration!</p>',
-					};
-					return sgMail.send(msg).then(
-						() => {},
-						(error) => {
-							console.error(error);
 
-							if (error.response) {
-								console.error(error.response.body);
-							}
-						}
-					);
-				});
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		// console.log(errors.array());
+		return res.status(400).render('auth/signup', {
+			path: '/signup',
+			pageTitle: 'Signup',
+			errorMessage: errors.array()[0].msg,
+		});
+	}
+	bcrypt
+		.hash(password, 12)
+		.then((hashedPassword) => {
+			const user = new User({
+				email: userEmail,
+				password: hashedPassword,
+				cart: { items: [] },
+			});
+			return user.save();
 		})
-		.catch((err) => console.log(err));
+		.then(() => {
+			res.redirect('/login');
+			const msg = {
+				to: userEmail,
+				from: 'hello@libertyskygraphics.com',
+				cc: 'libertyskygraphics@gmail.com',
+				subject: 'Your account successfully created',
+				html:
+					'<p><strong>Your account at eCommerce Training App with Node.JS successfully created.</strong></p><p>Thank you for registration!</p>',
+			};
+			return sgMail.send(msg).then(
+				() => {},
+				(error) => {
+					console.error(error);
+
+					if (error.response) {
+						console.error(error.response.body);
+					}
+				}
+			);
+		});
 };
 
 exports.postLogout = (req, res, next) => {
