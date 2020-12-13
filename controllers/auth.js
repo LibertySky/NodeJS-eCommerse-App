@@ -21,6 +21,8 @@ exports.getLogin = (req, res, next) => {
 		pageTitle: 'Login',
 		path: '/login',
 		errorMessage: message,
+		oldInput: { email: '', password: '' },
+		validationErrors: [],
 	});
 };
 
@@ -35,6 +37,12 @@ exports.getSignup = (req, res, next) => {
 		path: '/signup',
 		pageTitle: 'Signup',
 		errorMessage: message,
+		oldInput: {
+			email: '',
+			password: '',
+			confirmPassword: '',
+		},
+		validationErrors: [],
 	});
 };
 
@@ -43,18 +51,27 @@ exports.postLogin = (req, res, next) => {
 	const password = req.body.password;
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
-		return res.render('auth/login', {
+		return res.status(422).render('auth/login', {
 			pageTitle: 'Login',
 			path: '/login',
 			errorMessage: errors.array()[0].msg,
+			oldInput: { email: email, password: password },
+			validationErrors: errors.array(),
 		});
 	}
+
 	User.findOne({ email: email })
 		.then((user) => {
 			if (!user) {
-				req.flash('error', 'Invalid email or password');
-				return res.redirect('/login');
+				return res.status(422).render('auth/login', {
+					pageTitle: 'Login',
+					path: '/login',
+					errorMessage: 'Invalid email',
+					oldInput: { email: email, password: password },
+					validationErrors: [{ param: 'email', param: 'password' }],
+				});
 			}
+
 			bcrypt
 				.compare(password, user.password)
 				.then((doMatch) => {
@@ -65,8 +82,13 @@ exports.postLogin = (req, res, next) => {
 							res.redirect('/admin/products');
 						});
 					}
-					req.flash('error', 'Invalid email or password');
-					res.redirect('/login');
+					return res.status(422).render('auth/login', {
+						pageTitle: 'Login',
+						path: '/login',
+						errorMessage: 'Invalid password',
+						oldInput: { email: email, password: password },
+						validationErrors: [{ param: 'email', param: 'password' }],
+					});
 				})
 				.catch((err) => {
 					console.log(err);
@@ -87,6 +109,12 @@ exports.postSignup = (req, res, next) => {
 			path: '/signup',
 			pageTitle: 'Signup',
 			errorMessage: errors.array()[0].msg,
+			oldInput: {
+				email: userEmail,
+				password: password,
+				confirmPassword: req.body.confirmPassword,
+			},
+			validationErrors: errors.array(),
 		});
 	}
 	bcrypt

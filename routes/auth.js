@@ -16,11 +16,14 @@ router.post(
 		body('email')
 			.isEmail()
 			.normalizeEmail()
+			.trim()
 			.withMessage('Please, enter valid email'),
-		body('password', 'Password must be between 6 and 12 characters').isLength({
-			min: 6,
-			max: 12,
-		}),
+		body('password', 'Password must be between 6 and 12 characters')
+			.isLength({
+				min: 6,
+				max: 12,
+			})
+			.trim(),
 	],
 	authController.postLogin
 );
@@ -31,24 +34,29 @@ router.post(
 		check('email')
 			.isEmail()
 			.normalizeEmail()
+			.trim()
 			.withMessage('Please, enter valid email')
 			.custom((value, { req }) => {
 				return User.findOne({ email: value }).then((userDoc) => {
 					if (userDoc) {
-						return Promise.reject('Email already exist');
+						return Promise.reject('Email already in use');
 					}
 				});
 			}),
-		body('password', 'Password must be between 6 and 12 characters').isLength({
-			min: 6,
-			max: 12,
-		}),
-		body('confirmPassword').custom((value, { req }) => {
-			if (value !== req.body.password) {
-				throw new Error('Confirmed Password does not match Password');
-			}
-			return true;
-		}),
+		body('password', 'Password must be between 6 and 12 characters')
+			.isLength({
+				min: 6,
+				max: 12,
+			})
+			.trim(),
+		body('confirmPassword')
+			.trim()
+			.custom((value, { req }) => {
+				if (value !== req.body.password) {
+					throw new Error('Confirmed Password does not match Password');
+				}
+				return true;
+			}),
 	],
 	authController.postSignup
 );
