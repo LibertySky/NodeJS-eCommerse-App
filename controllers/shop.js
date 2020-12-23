@@ -208,7 +208,7 @@ exports.getInvoice = (req, res, next) => {
 			});
 			pdfDoc
 				.fontSize(16)
-				.fillColor('black')
+				.fillColor('green')
 				.moveDown(0.5)
 				.text(`Total Price: $${totalPrice}`, {
 					width: 410,
