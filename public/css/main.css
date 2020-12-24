@@ -239,6 +239,33 @@ form {
 	background-color: red;
 }
 
+.mb {
+	margin-bottom: 15px;
+}
+
+.pagination {
+	text-align: center;
+	margin: 3rem 0;
+	font-size: 0.8rem;
+}
+
+.pagination a {
+	text-decoration: none;
+	color: #00695c;
+	padding: 0.5rem 0.8rem;
+	border: 1px solid #00695c;
+	border-radius: 5px;
+	margin: 0 0.5rem;
+	transition: all 0.3s;
+}
+
+.pagination a:hover,
+.pagination a:active,
+.pagination a.active {
+	background-color: #00695c;
+	color: #fff;
+}
+
 @media (min-width: 768px) {
 	.main-header__nav {
 		display: flex;
@@ -249,6 +276,8 @@ form {
 	}
 }
 
-.mb {
-	margin-bottom: 15px;
+@media (max-width: 768px) {
+	.main-header__nav {
+		display: none;
+	}
 }
